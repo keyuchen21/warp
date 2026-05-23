@@ -69,6 +69,7 @@ pub enum TargetScope {
     Settings,
     Appearance,
     Surface,
+    Action,
 }
 
 /// Whether an action has an app-side implementation in this stack layer.
@@ -107,6 +108,10 @@ pub enum ActionKind {
     AppVersion,
     #[serde(rename = "app.active")]
     AppActive,
+    #[serde(rename = "action.list")]
+    ActionList,
+    #[serde(rename = "action.get")]
+    ActionGet,
     #[serde(rename = "app.focus")]
     AppFocus,
     #[serde(rename = "app.settings.open")]
@@ -204,6 +209,8 @@ impl ActionKind {
         Self::AppInspect,
         Self::AppVersion,
         Self::AppActive,
+        Self::ActionList,
+        Self::ActionGet,
         Self::AppFocus,
         Self::AppSettingsOpen,
         Self::AppCommandPaletteOpen,
@@ -256,6 +263,8 @@ impl ActionKind {
             Self::AppInspect => "app.inspect",
             Self::AppVersion => "app.version",
             Self::AppActive => "app.active",
+            Self::ActionList => "action.list",
+            Self::ActionGet => "action.get",
             Self::AppFocus => "app.focus",
             Self::AppSettingsOpen => "app.settings.open",
             Self::AppCommandPaletteOpen => "app.command_palette.open",
@@ -304,17 +313,31 @@ impl ActionKind {
     }
 
     pub fn metadata(self) -> ActionMetadata {
-        let (implementation_status, requires_authenticated_user, allowed_invocation_contexts) =
-            match self {
-                Self::InstanceList | Self::AppPing | Self::AppVersion | Self::TabCreate => (
-                    ActionImplementationStatus::Implemented,
-                    false,
-                    vec![
-                        InvocationContext::InsideWarp,
-                        InvocationContext::OutsideWarp,
-                    ],
-                ),
-                _ => (ActionImplementationStatus::Stub, true, Vec::new()),
+        let implementation_status = match self {
+            Self::InstanceList
+            | Self::AppPing
+            | Self::AppInspect
+            | Self::AppVersion
+            | Self::AppActive
+            | Self::ActionList
+            | Self::ActionGet
+            | Self::WindowList
+            | Self::TabList
+            | Self::TabCreate
+            | Self::PaneList
+            | Self::SessionList => ActionImplementationStatus::Implemented,
+            _ => ActionImplementationStatus::Stub,
+        };
+        let requires_authenticated_user =
+            implementation_status != ActionImplementationStatus::Implemented;
+        let allowed_invocation_contexts =
+            if implementation_status == ActionImplementationStatus::Implemented {
+                vec![
+                    InvocationContext::InsideWarp,
+                    InvocationContext::OutsideWarp,
+                ]
+            } else {
+                Vec::new()
             };
         ActionMetadata {
             kind: self,
@@ -354,6 +377,8 @@ impl ActionKind {
             | Self::AppInspect
             | Self::AppVersion
             | Self::AppActive
+            | Self::ActionList
+            | Self::ActionGet
             | Self::WindowList
             | Self::TabList
             | Self::PaneList
@@ -408,6 +433,8 @@ impl ActionKind {
             | Self::AppInspect
             | Self::AppVersion
             | Self::AppActive
+            | Self::ActionList
+            | Self::ActionGet
             | Self::WindowList
             | Self::TabList
             | Self::PaneList
@@ -499,6 +526,7 @@ impl ActionKind {
             Self::SettingGet | Self::SettingList | Self::SettingSet | Self::SettingToggle => {
                 TargetScope::Settings
             }
+            Self::ActionList | Self::ActionGet => TargetScope::Action,
             Self::AppSettingsOpen
             | Self::AppCommandPaletteOpen
             | Self::AppCommandSearchOpen
