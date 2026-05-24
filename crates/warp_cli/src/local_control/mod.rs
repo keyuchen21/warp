@@ -1,3 +1,4 @@
+//! Command-line interface for controlling a running local Warp app.
 mod commands;
 mod completions;
 mod output;
@@ -18,6 +19,7 @@ use commands::{
 use completions::generate_completions_to_stdout;
 use output::write_control_error;
 
+/// Parsed top-level arguments for `warpctrl`.
 #[derive(Debug, Parser)]
 #[command(
     name = "warpctrl",
@@ -64,6 +66,7 @@ impl ControlArgs {
     }
 }
 
+/// Top-level `warpctrl` command groups.
 #[derive(Debug, Clone, Subcommand)]
 pub enum ControlCommand {
     /// Inspect local Warp app instances.
@@ -137,12 +140,14 @@ pub enum ControlCommand {
     },
 }
 
+/// Commands that inspect locally discoverable Warp instances.
 #[derive(Debug, Clone, Subcommand)]
 pub enum InstanceCommand {
     /// List locally discoverable Warp instances.
     List,
 }
 
+/// Commands that inspect the selected Warp app instance.
 #[derive(Debug, Clone, Subcommand)]
 pub enum AppCommand {
     /// Check that the selected local Warp app responds.
@@ -173,6 +178,7 @@ pub enum WindowCommand {
     List(TargetArgs),
 }
 
+/// Commands that control tabs in the selected Warp app instance.
 #[derive(Debug, Clone, Subcommand)]
 pub enum TabCommand {
     /// List tabs in the selected local Warp app.
@@ -235,6 +241,7 @@ pub enum SettingCommand {
     Get(SettingGetArgs),
 }
 
+/// Common flags for selecting which running Warp instance receives a command.
 #[derive(Debug, Clone, Args, Default)]
 pub struct TargetArgs {
     /// Target a specific local Warp instance id from `warp instance list`.

@@ -1,3 +1,4 @@
+//! Implementations for user-facing `warpctrl` command groups.
 use local_control::protocol::{
     Action, ActionGetParams, ActionKind, ActionMetadata, ControlError, EmptyParams, ErrorCode,
     RequestEnvelope,
@@ -15,6 +16,7 @@ use crate::local_control::{
     ThemeCommand, WindowCommand,
 };
 
+/// Display-oriented projection of a discoverable Warp instance.
 #[derive(Serialize)]
 struct InstanceSummary {
     instance_id: String,

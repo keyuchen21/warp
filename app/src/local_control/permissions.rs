@@ -1,3 +1,4 @@
+//! Permission checks that map protocol action metadata onto local settings.
 use crate::auth::AuthStateProvider;
 use crate::features::FeatureFlag;
 use crate::settings::{

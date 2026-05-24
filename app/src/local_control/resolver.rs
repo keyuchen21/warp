@@ -1,3 +1,4 @@
+//! Target and parameter validation for the first local-control action slice.
 use crate::local_control::handlers::metadata::action_metadata_for_name;
 use ::local_control::protocol::{
     ActionGetParams, BlockGetParams, BlockListParams, HistoryListParams, PaneTarget, SessionTarget,

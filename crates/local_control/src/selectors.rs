@@ -1,13 +1,17 @@
+//! Serializable selectors for targeting windows, tabs, and panes.
 use serde::{Deserialize, Serialize};
 
+/// Opaque window identifier supplied by Warp metadata.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct WindowSelector(pub String);
 
+/// Opaque tab identifier supplied by Warp metadata.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct TabSelector(pub String);
 
+/// Opaque pane identifier supplied by Warp metadata.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(transparent)]
 pub struct PaneSelector(pub String);
@@ -16,6 +20,7 @@ pub struct PaneSelector(pub String);
 #[serde(transparent)]
 pub struct SessionSelector(pub String);
 
+/// Hierarchical target for actions that operate on a specific Warp surface.
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct TargetSelector {
@@ -29,6 +34,7 @@ pub struct TargetSelector {
     pub session: Option<SessionTarget>,
 }
 
+/// Window-level target selector.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum WindowTarget {
@@ -38,6 +44,7 @@ pub enum WindowTarget {
     Title { title: String },
 }
 
+/// Tab-level target selector.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum TabTarget {
@@ -47,6 +54,7 @@ pub enum TabTarget {
     Title { title: String },
 }
 
+/// Pane-level target selector.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum PaneTarget {
